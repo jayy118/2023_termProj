@@ -40,4 +40,15 @@ public class ItemController {
             return ResponseEntity.badRequest().body(response);
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?> retrieveItemList() {
+        String temporaryUserId = "temporary-user";
+
+        List<ItemEntity> entities = service.retrieve(temporaryUserId);
+        List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());
+        ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
+    }
 }

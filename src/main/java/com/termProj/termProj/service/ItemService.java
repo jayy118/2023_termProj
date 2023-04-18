@@ -22,6 +22,10 @@ public class ItemService {
         return repository.findByUserId(entity.getUserId());
     }
 
+    public List<ItemEntity> retrieve(final String userId) {
+        return repository.findByUserId(userId);
+    }
+
     private void validate(final ItemEntity entity) {
         if(entity == null) {
             log.warn("Entity cannot be null.");
