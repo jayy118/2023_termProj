@@ -43,6 +43,17 @@ public class ItemService {
         return retrieve(entity.getUserId());
     }
 
+    public List<ItemEntity> search(String title) {
+        try {
+            repository.findByTitleContaining(title);
+        } catch (Exception e) {
+            log.error("error search entity ", e);
+
+            throw new RuntimeException("error search entity" + title);
+        }
+        return repository.findByTitleContaining(title);
+    }
+
     public List<ItemEntity> delete(final ItemEntity entity) {
         validate(entity);
 

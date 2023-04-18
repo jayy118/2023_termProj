@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface ItemRepository extends JpaRepository<ItemEntity, String> {
     List<ItemEntity> findByUserId(String userId);
+    List<ItemEntity> findByTitleContaining(String title);
 }

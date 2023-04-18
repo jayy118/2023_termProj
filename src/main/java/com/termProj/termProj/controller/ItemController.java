@@ -55,6 +55,23 @@ public class ItemController {
     }
 
     @GetMapping
+    public ResponseEntity<?> searchItems(@RequestBody ItemDTO dto) {
+        ItemEntity entity = ItemDTO.toEntity(dto);
+        String title = entity.getTitle();
+        try {
+            List<ItemEntity> entities = service.search(title);
+            List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());
+            ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
+
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            String error =e.getMessage();
+            ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().error(error).build();
+            return ResponseEntity.badRequest().body(response);
+        }
+
+    }
+    @GetMapping("/list")
     public ResponseEntity<?> retrieveItemList() {
         String temporaryUserId = "temporary-user";
 
