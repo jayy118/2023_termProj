@@ -41,6 +41,19 @@ public class ItemController {
         }
     }
 
+    @PutMapping
+    public ResponseEntity<?> updateItem(@RequestBody ItemDTO dto) {
+        String temporaryUserId = "temporary-user";
+        ItemEntity entity = ItemDTO.toEntity(dto);
+        entity.setUserId(temporaryUserId);
+        List<ItemEntity> entities = service.update(entity);
+        List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());
+        ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
+
+        return ResponseEntity.ok().body(response);
+
+    }
+
     @GetMapping
     public ResponseEntity<?> retrieveItemList() {
         String temporaryUserId = "temporary-user";

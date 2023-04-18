@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -24,6 +25,21 @@ public class ItemService {
 
     public List<ItemEntity> retrieve(final String userId) {
         return repository.findByUserId(userId);
+    }
+
+    public List<ItemEntity> update(final ItemEntity entity) {
+        validate(entity);
+        final Optional<ItemEntity> original = repository.findById(entity.getId());
+
+        original.ifPresent(item -> {
+            item.setTitle(entity.getTitle());
+            item.setType(entity.getType());
+            item.setBrand(entity.getBrand());
+
+            repository.save(item);
+        });
+
+        return retrieve(entity.getUserId());
     }
 
     private void validate(final ItemEntity entity) {
