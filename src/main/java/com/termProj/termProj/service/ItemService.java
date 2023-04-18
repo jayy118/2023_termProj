@@ -3,6 +3,7 @@ package com.termProj.termProj.service;
 import com.termProj.termProj.model.ItemEntity;
 import com.termProj.termProj.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,19 @@ public class ItemService {
             repository.save(item);
         });
 
+        return retrieve(entity.getUserId());
+    }
+
+    public List<ItemEntity> delete(final ItemEntity entity) {
+        validate(entity);
+
+        try {
+            repository.delete(entity);
+        } catch (Exception e) {
+            log.error("error deleting entity ", entity.getId(), e);
+
+            throw new RuntimeException("error deleting entity" + entity.getId());
+        }
         return retrieve(entity.getUserId());
     }
 

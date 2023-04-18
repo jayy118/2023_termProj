@@ -64,4 +64,23 @@ public class ItemController {
 
         return ResponseEntity.ok().body(response);
     }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteItem(@RequestBody ItemDTO dto) {
+        try {
+            String temporaryUserId = "temporary-user";
+            ItemEntity entity = ItemDTO.toEntity(dto);
+            entity.setUserId(temporaryUserId);
+            List<ItemEntity> entities = service.delete(entity);
+            List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());
+            ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
+
+            return ResponseEntity.ok().body(response);
+        } catch (Exception e) {
+            String error =e.getMessage();
+            ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().error(error).build();
+            return ResponseEntity.badRequest().body(response);
+        }
+
+    }
 }
