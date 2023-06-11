@@ -26,11 +26,18 @@ public class ItemController {
             @AuthenticationPrincipal String userId,
             @RequestBody ItemDTO dto) {
         try {
+            String temporaryUserId = "temporary-user";
+
             ItemEntity entity = ItemDTO.toEntity(dto);
+
             entity.setId(null);
+
             entity.setUserId(userId);
+
             List<ItemEntity> entities = service.create(entity);
+
             List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());
+
             ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
 
             return ResponseEntity.ok().body(response);
@@ -45,7 +52,9 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchItems(@RequestParam(required = false, value = "title")String title) {
+    public ResponseEntity<?> searchItems(
+            @AuthenticationPrincipal String userId,
+            @RequestParam(required = false, value = "title")String title) {
         try {
             List<ItemEntity> entities = service.search(title);
             List<ItemDTO> dtos = entities.stream().map(ItemDTO::new).collect(Collectors.toList());

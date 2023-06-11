@@ -13,7 +13,24 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class ItemService {
+
+    @Autowired
+    private ItemRepository repository;
     private void validate(final ItemEntity entity) {
+        if(entity == null) {
+            log.warn("Entity cannot be null.");
+            throw new RuntimeException(("Entity cannot be null."));
+        } if(entity.getUserId() == null) {
+            log.warn("Unknown user.");
+            throw new RuntimeException(("Unknown user."));
+        }
+    }
+
+    public List<ItemEntity> retrieve(final String userId) {
+        return repository.findByUserId(userId);
+    }
+
+    public List<ItemEntity> create(final ItemEntity entity) {
         if(entity == null) {
             log.warn("Entity cannot be null.");
             throw new RuntimeException("Entity cannot be null.");
@@ -23,14 +40,6 @@ public class ItemService {
             log.warn("Unknown user.");
             throw new RuntimeException("Unknown user.");
         }
-    }
-
-    public List<ItemEntity> retrieve(final String userId) {
-        return repository.findByUserId(userId);
-    }
-
-    public List<ItemEntity> create(final ItemEntity entity) {
-        validate(entity);
 
         repository.save(entity);
 
@@ -79,8 +88,7 @@ public class ItemService {
         return retrieve(entity.getUserId());
     }
 
-    @Autowired
-    private ItemRepository repository;
+
     public String itemService() {
         ItemEntity entity = ItemEntity.builder().build();
         repository.save(entity);
