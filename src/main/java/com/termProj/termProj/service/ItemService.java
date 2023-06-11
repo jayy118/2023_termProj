@@ -13,6 +13,21 @@ import java.util.Optional;
 @Slf4j
 @Service
 public class ItemService {
+    private void validate(final ItemEntity entity) {
+        if(entity == null) {
+            log.warn("Entity cannot be null.");
+            throw new RuntimeException("Entity cannot be null.");
+        }
+
+        if(entity.getUserId() == null) {
+            log.warn("Unknown user.");
+            throw new RuntimeException("Unknown user.");
+        }
+    }
+
+    public List<ItemEntity> retrieve(final String userId) {
+        return repository.findByUserId(userId);
+    }
 
     public List<ItemEntity> create(final ItemEntity entity) {
         validate(entity);
@@ -24,8 +39,16 @@ public class ItemService {
         return repository.findByUserId(entity.getUserId());
     }
 
-    public List<ItemEntity> retrieve(final String userId) {
-        return repository.findByUserId(userId);
+
+    public List<ItemEntity> search(String title) {
+        try {
+            repository.findByTitleContaining(title);
+        } catch (Exception e) {
+            log.error("error search entity ", e);
+
+            throw new RuntimeException("error search entity" + title);
+        }
+        return repository.findByTitleContaining(title);
     }
 
     public List<ItemEntity> update(final ItemEntity entity) {
@@ -43,17 +66,6 @@ public class ItemService {
         return retrieve(entity.getUserId());
     }
 
-    public List<ItemEntity> search(String title) {
-        try {
-            repository.findByTitleContaining(title);
-        } catch (Exception e) {
-            log.error("error search entity ", e);
-
-            throw new RuntimeException("error search entity" + title);
-        }
-        return repository.findByTitleContaining(title);
-    }
-
     public List<ItemEntity> delete(final ItemEntity entity) {
         validate(entity);
 
@@ -67,17 +79,6 @@ public class ItemService {
         return retrieve(entity.getUserId());
     }
 
-    private void validate(final ItemEntity entity) {
-        if(entity == null) {
-            log.warn("Entity cannot be null.");
-            throw new RuntimeException("Entity cannot be null.");
-        }
-
-        if(entity.getUserId() == null) {
-            log.warn("Unknown user.");
-            throw new RuntimeException("Unknown user.");
-        }
-    }
     @Autowired
     private ItemRepository repository;
     public String itemService() {
