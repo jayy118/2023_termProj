@@ -52,8 +52,7 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchItems(
-            @AuthenticationPrincipal String userId,
+    public ResponseEntity<?> searchItems(@AuthenticationPrincipal String userId,
             @RequestParam(required = false, value = "title")String title) {
         try {
             List<ItemEntity> entities = service.search(title);
@@ -61,6 +60,7 @@ public class ItemController {
             ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().data(dtos).build();
             return ResponseEntity.ok().body(response);
         } catch (Exception e) {
+            log.info("de");
             String error =e.getMessage();
             ResponseDTO<ItemDTO> response = ResponseDTO.<ItemDTO>builder().error(error).build();
             return ResponseEntity.badRequest().body(response);

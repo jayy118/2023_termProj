@@ -51,6 +51,7 @@ public class ItemService {
 
     public List<ItemEntity> search(String title) {
         try {
+            log.info("try");
             repository.findByTitleContaining(title);
         } catch (Exception e) {
             log.error("error search entity ", e);
@@ -59,7 +60,7 @@ public class ItemService {
         }
         return repository.findByTitleContaining(title);
     }
-
+// EA%B2%80%EC%83%89
     public List<ItemEntity> update(final ItemEntity entity) {
         validate(entity);
         final Optional<ItemEntity> original = repository.findById(entity.getId());
